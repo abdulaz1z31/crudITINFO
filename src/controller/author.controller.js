@@ -1,15 +1,28 @@
-export const getAllAuthors = (req, res, next) => {
-    try {
-        res.status(200).send("success all author")
-    } catch (err) {
-        next(err)
-    }
-}
+import Author from "../models/index.model.js";
 
-export const getAuthorById = (req, res, next) => {
-    try {
-        res.status(200).send("success by id author")
-    } catch (err) {
-        next(err)
+
+export const getAllAuthors = async (req, res, next) => {
+  try {
+    const authors = await Author.find();
+    res.status(200).json(authors);
+  } catch (err) {
+    next(err);
+  }
+};
+
+
+
+export const getAuthorById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const author = await Author.findById(id);
+
+    if (!author) {
+      return res.status(404).json({ message: "Author not foudn" });
     }
-}
+
+    res.status(200).json(author);
+  } catch (err) {
+    next(err);
+  }
+};

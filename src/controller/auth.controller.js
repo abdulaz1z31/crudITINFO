@@ -1,15 +1,34 @@
-export const registerAuthor = (req, res, next) => {
-    try {
-        res.status(200).send("success register")
-    } catch (err) {
-        next(err)
-    }
-}
+import Author from '../models/index.model.js';
 
-export const loginAuthor = (req, res, next) => {
+export const registerAuthor = async (req, res, next) => {
     try {
-        res.status(200).send("success lgoin")
+        const { name, email, password } = req.body;
+
+        const newAuthor = await Author.create({ name, email, password });
+
+        res.status(201).json({
+            message: "Aded user successfully",
+            author: newAuthor
+        });
     } catch (err) {
-        next(err)
+        next(err);
     }
-}
+};
+
+export const loginAuthor = async (req, res, next) => {
+    try {
+        const { username, password } = req.body;
+
+        const author = await Author.findOne({ username, password });
+        if (!author) {
+            return res.status(401).json({ message: "Username or passwrod is invalid" });
+        }
+
+        res.status(200).json({
+            message: "Logged in successfully",
+            author
+        });
+    } catch (err) {
+        next(err);
+    }
+};
